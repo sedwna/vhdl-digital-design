@@ -1,162 +1,108 @@
----
+# VHDL Digital Design
 
-# Digital Design Repository 🖥️
+A collection of VHDL modules and testbenches covering behavioral, structural and dataflow digital design.
 
-This repository contains a collection of **VHDL modules** for **behavioral** and **structural** digital design. It includes various components such as **counters**, **registers**, **RAM/ROM blocks**, **adders**, **comparators**, and more. These modules are designed to be modular, reusable, and easy to integrate into larger digital systems.
+![VHDL](https://img.shields.io/badge/language-VHDL-6f42c1)
+![Simulator](https://img.shields.io/badge/simulator-ModelSim-0a7bbb)
 
----
+## Overview
 
-## Table of Contents
+Each module lives in its own folder with its sources under `SRC/`. Most modules come with a
+`tb_*.vhdl` testbench, many include ModelSim project files (`sim.mpf`), and several include
+screenshots of their simulation waveforms in `sim_photo/`.
 
-1. [Features](#features)
-2. [Repository Structure](#repository-structure)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Modules Overview](#modules-overview)
-6. [Contributing](#contributing)
+The designs are grouped by modeling style:
 
----
+- **Behavioral** — counters, registers, shift registers, RAM/ROM blocks and finite state machines
+- **Structural** — adders, subtractors, comparators, latches and flip-flops built from smaller components
+- **Dataflow** — a tri-state buffer
+- **`_prj`** — the data path of a 4-bit multiplier
 
-## Features ✨
+## Modules
 
-- **Behavioral and Structural Designs**: Includes both high-level behavioral descriptions and low-level structural implementations.
-- **Modular and Reusable**: Each module is designed to be standalone and easily integrable into larger projects.
-- **Wide Range of Components**:
-  - **Counters**: 4-bit and N-bit counters, up/down counters.
-  - **Registers**: PIPO, PISO, SIPO, and shift registers.
-  - **Memory Blocks**: Block RAM, distributed RAM, ROM.
-  - **Arithmetic Units**: Adders, subtractors, comparators.
-  - **State Machines**: Basic state machine implementations.
-- **Testbenches**: Includes testbenches for most modules to verify functionality.
+### Behavioral (`Behavioral/`)
 
----
+| Category | Modules |
+| --- | --- |
+| Counters | `counter_4_bit`, `counter_n_bit`, `upDown_counter_n_bit` |
+| Flip-flops and registers | `d_flip_flop`, `register_4_bit`, `register_n_bit`, `synch_register_4bit` |
+| Shift registers | `left_PIPO_4_bit`, `left_PIPO_n_bit`, `right_PIPO_4_bit`, `right_PIPO_n_bit`, `left_PISO_n_bit`, `right_PISO_n_bit`, `left_SIPO_n_bit`, `right_SIPO_n_bit`, `left_right_shift_reg_4_bit` |
+| Memory | `block_ram`, `block_ram_bidirectional`, `block_ram_bidirectional_general` (generic address/data width, `inout` data bus), `distributed_ram`, `block_rom`, `distributed_rom`, `dynamic_rom` |
+| State machines | `state_machine/seq_det_1011_mealy`, `state_machine/seq_det_1011_moore` — "1011" sequence detectors |
 
-## Repository Structure 📂
+### Structural (`Structural/`)
+
+| Category | Modules |
+| --- | --- |
+| Adders | `full_adder`, `full_adder_4_bit`, `adder_n_bit` (generic width), `adder_n_bit_packege` |
+| Subtractors | `full_subtractor_1_bit`, `full_subtractor_4_bit`, `full_subtractor_4_bit_with_full_adder_1_bit` |
+| Adder / subtractor | `full_sub_and_adder_4_bit` |
+| Comparators | `bit_comparator`, `comparator_4_bit_generate`, `comparator_n_bit_generate` (built with `generate`) |
+| Storage | `d_latch`, `d_flip_flop` (from D latches), `register_4_bit` |
+| Multiplexers | `mux2_1` |
+
+### Dataflow (`dataflow/`)
+
+| Module | Description |
+| --- | --- |
+| `tri_state_buffer` | Passes the input when enabled and drives `'Z'` otherwise |
+
+### Project (`_prj/`)
+
+| Module | Description |
+| --- | --- |
+| `Multiplier_4_bit` | Data path of a 4-bit multiplier (`data_path.vhdl`) built from an n-bit adder, registers and shift registers. The folder contains the data path only, without a controller or testbench. |
+
+## Project structure
 
 ```
-Digital_Design_Repository/
-├── behavioral/               # Behavioral VHDL/Verilog modules
-│   ├── block_ram/            # Block RAM implementation
-│   ├── block_ram_bidirectional/  # Bidirectional block RAM
-│   ├── counter_4_bit/        # 4-bit counter
-│   ├── counter_n_bit/        # N-bit counter
-│   ├── d_flip_flop/          # D Flip-Flop
-│   ├── distributed_ram/      # Distributed RAM
-│   ├── left_PIPO_4_bit/      # 4-bit left parallel-in parallel-out register
-│   ├── right_PISO_n_bit/     # N-bit right parallel-in serial-out register
-│   └── ...                   # Other behavioral modules
-├── structural/               # Structural VHDL/Verilog modules
-│   ├── adder_n_bit/          # N-bit adder
-│   ├── comparator_n_bit/     # N-bit comparator
-│   ├── d_latch/              # D Latch
-│   ├── full_adder/           # Full adder
-│   ├── mux2_1/               # 2-to-1 multiplexer
-│   └── ...                   # Other structural modules
-├── dataflow/                 # Dataflow designs
-│   └── tri_state_buffer/     # Tri-state buffer
-├── _prj/                     # Project files
-│   └── Multiplier_4_bit/     # 4-bit multiplier project
-├── README.md                 # Project documentation
-└── LICENSE                   # License file
+vhdl-digital-design/
+├── Behavioral/
+│   ├── block_ram/
+│   │   ├── SRC/
+│   │   │   ├── block_ram.vhdl
+│   │   │   └── tb_block_ram.vhdl
+│   │   └── sim.mpf              # ModelSim project
+│   ├── counter_4_bit/
+│   │   ├── SRC/
+│   │   └── sim_photo/           # waveform screenshot
+│   ├── state_machine/
+│   │   ├── seq_det_1011_mealy/SRC/
+│   │   └── seq_det_1011_moore/SRC/
+│   └── ...                      # 24 behavioral module folders in total
+├── Structural/
+│   ├── full_adder/
+│   ├── comparator_n_bit_generate/
+│   └── ...                      # 15 structural module folders in total
+├── dataflow/
+│   └── tri_state_buffer/SRC/
+└── _prj/
+    └── Multiplier_4_bit/SRC/
 ```
 
----
+## Simulating a module
 
-## Installation 🛠️
+The ModelSim project files in the repository were created with ModelSim (INI version 2020.4),
+but any VHDL simulator can compile the sources.
 
-### Prerequisites
+**ModelSim GUI:** open a module's `sim.mpf`, compile the files, and simulate the testbench entity.
 
-- A VHDL/Verilog simulator (e.g., ModelSim, Xilinx Vivado, or Quartus).
-- Basic knowledge of digital design and hardware description languages (VHDL/Verilog).
+**ModelSim command line** (example: 4-bit counter):
 
-### Steps
+```bash
+cd Behavioral/counter_4_bit/SRC
+vlib work
+vcom counter_4_bit.vhdl tb_counter_4_bit.vhdl
+vsim test_counter_4_bit
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/sedwna/VHDL_Code.git
-   ```
+Testbench entity names vary by module (for example, `test_counter_4_bit`), so check the
+`ENTITY` line in the `tb_*.vhdl` file. Compile a module's component files before the files
+that instantiate them. Some modules use the Synopsys `std_logic_unsigned` package, so use a
+simulator that provides it (ModelSim does).
 
-2. Open the desired module in your VHDL simulator.
+## Notes
 
-3. Compile and simulate the module using the provided testbenches.
-
----
-
-## Usage 🚀
-
-### Running a Module
-
-1. Navigate to the module folder:
-   ```bash
-   cd behavioral/counter_4_bit
-   ```
-
-2. Open the module and testbench in your simulator.
-
-3. Compile and simulate the design to verify its functionality.
-
-### Example: 4-Bit Counter
-
-1. Open the `counter_4_bit` module in your simulator.
-2. Compile the module and its testbench.
-3. Run the simulation to observe the counter's behavior.
-
----
-
-## Modules Overview 📋
-
-### Behavioral Modules
-
-| Module Name                  | Description                                      |
-|------------------------------|--------------------------------------------------|
-| `block_ram`                  | Block RAM implementation.                        |
-| `block_ram_bidirectional`    | Bidirectional block RAM.                         |
-| `counter_4_bit`              | 4-bit counter.                                   |
-| `counter_n_bit`              | N-bit counter.                                   |
-| `d_flip_flop`                | D Flip-Flop implementation.                      |
-| `left_PIPO_4_bit`            | 4-bit left parallel-in parallel-out register.    |
-| `right_PISO_n_bit`           | N-bit right parallel-in serial-out register.     |
-
-### Structural Modules
-
-| Module Name                  | Description                                      |
-|------------------------------|--------------------------------------------------|
-| `adder_n_bit`                | N-bit adder.                                     |
-| `comparator_n_bit`           | N-bit comparator.                                |
-| `d_latch`                    | D Latch implementation.                          |
-| `full_adder`                 | Full adder.                                      |
-| `mux2_1`                     | 2-to-1 multiplexer.                              |
-
-### Dataflow Modules
-
-| Module Name                  | Description                                      |
-|------------------------------|--------------------------------------------------|
-| `tri_state_buffer`           | Tri-state buffer implementation.                 |
-
----
-
-## Contributing 🤝
-
-We welcome contributions to this repository! If you'd like to contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeatureName`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push your changes to your fork (`git push origin feature/YourFeatureName`).
-5. Open a Pull Request.
-
----
-
-## Acknowledgments 🙏
-
-- **Open Source Community**: For providing valuable resources and tools.
-- **Digital Design Enthusiasts**: For inspiring this collection of modules.
-
-## Contact
-
-For questions or feedback, feel free to reach out:
-
-- **Email**: [sajaddehqan2002@gmail.com]
-- **GitHub**: [[My GitHub Profile](https://github.com/sedwna)]
----
-
+- `.gitignore` excludes the compiled `work` library. Some ModelSim files (`sim.mpf`, `sim.cr.mti`, `vsim.wlf`) are committed alongside the sources.
+- `Structural/register_4_bit` keeps its source at the folder root instead of in `SRC/`.
+- In `dataflow/tri_state_buffer`, the architecture is declared `OF ent` instead of `OF tri_state_buffer`, so rename it before compiling.
